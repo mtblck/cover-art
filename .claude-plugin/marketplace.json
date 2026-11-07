@@ -1,0 +1,18 @@
+{
+  "name": "cover-art",
+  "owner": {
+    "name": "mtblck",
+    "url": "https://github.com/mtblck"
+  },
+  "metadata": {
+    "description": "cover-art: full-bleed 16:10 cover illustrations for a project, with its logo in a pill, drawn as SVG from the project's own repo, purpose and colours."
+  },
+  "plugins": [
+    {
+      "name": "cover-art",
+      "source": "./",
+      "description": "Full-bleed, representational 16:10 cover illustrations with the project's logo in a pill, for websites, apps, extensions and skills, plus a 16:9 Ko-fi PNG of each.",
+      "category": "design"
+    }
+  ]
+}
