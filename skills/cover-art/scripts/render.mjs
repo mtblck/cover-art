@@ -3,15 +3,18 @@
  * Renders cover SVGs to PNG at full size (1600 × 1000) and card size (380 × 238)
  * so both can be read back and checked, plus a 1600 × 900 (16:9) Ko-fi PNG
  * cropped from the middle of the cover (inside its 100 px safe margin).
+ * A square SVG (square.mjs's <name>-square.svg) becomes one PNG at the size it
+ * declares, 1080 × 1080 by default, for Instagram.
  *
- *   node render.mjs cover.svg [more.svg …] [--out DIR]
+ *   node render.mjs cover.svg [cover-square.svg …] [--out DIR]
  *
- * Writes <name>.png, <name>-card.png and <name>-kofi.png next to each SVG
- * (or into --out).
+ * Writes <name>.png, <name>-card.png and <name>-kofi.png next to each cover,
+ * and <name>-square.png for each square (or into --out).
  * Uses Playwright only if it and a Chromium are already installed; it never
  * installs one. Exit 2 means "no browser here".
  */
 import { basename, dirname, join, resolve } from 'node:path'
+import { readFileSync } from 'node:fs'
 import { pathToFileURL } from 'node:url'
 import { createRequire } from 'node:module'
 import { execSync } from 'node:child_process'
@@ -58,12 +61,21 @@ const sizes = [
   ['-card', 380 / 1600],
   ['-kofi', 1, { x: 0, y: 50, width: 1600, height: 900 }],
 ]
+// A square is drawn once, at the width and height its root <svg> declares.
+function squareSide(src) {
+  const root = readFileSync(src, 'utf8').match(/<svg\b[^>]*>/)?.[0] ?? ''
+  const w = Number(root.match(/\swidth="([\d.]+)"/)?.[1])
+  const h = Number(root.match(/\sheight="([\d.]+)"/)?.[1])
+  return w && w === h ? w : 0
+}
 for (const file of files) {
   const src = resolve(file)
   const dir = outDir ?? dirname(src)
   const name = basename(src, '.svg')
-  for (const [suffix, scale, clip] of sizes) {
-    const page = await browser.newPage({ viewport: { width: 1600, height: 1000 }, deviceScaleFactor: scale })
+  const side = squareSide(src)
+  const viewport = side ? { width: side, height: side } : { width: 1600, height: 1000 }
+  for (const [suffix, scale, clip] of side ? [['', 1]] : sizes) {
+    const page = await browser.newPage({ viewport, deviceScaleFactor: scale })
     await page.goto(pathToFileURL(src).href)
     const out = join(dir, `${name}${suffix}.png`)
     await page.screenshot({ path: out, ...(clip && { clip }) })

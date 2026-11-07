@@ -7,7 +7,7 @@ reads the project's purpose, design tokens and any hero visual, finds its logo
 and brand font, picks one of five concept patterns, draws a 1600 × 1000 SVG
 with a script, checks it at full and card size, and delivers it with alt text,
 plus a 1600 × 900 Ko-fi PNG of the same cover for announcing the project or an
-update.
+update, and a 1080 × 1080 square SVG and PNG for an Instagram post.
 
 ![Tinkerkit's cover: a pixel-art village map with a brass cursor laying its next tile, and the Tinkerkit logo bottom left](skills/cover-art/examples/tinkerkit.svg)
 
@@ -51,7 +51,10 @@ product does, in the product's own colours, with the accent only on that part.
 
 - `scripts/render.mjs` renders a cover at 1600 px and 380 px for review, and
   the 16:9 Ko-fi PNG (Node 18+; uses Playwright's Chromium only if it's already
-  installed).
+  installed), and a square SVG as a 1080 × 1080 PNG.
+- `scripts/square.mjs` cuts the square SVG from a cover: a 1000 px window of the
+  scene (`--center` picks where), with the pills moved into its bottom corners
+  (Node 18+, no dependencies).
 - `scripts/logo_pill.py` draws the logo pill: the project's mark and its
   wordmark set in the brand font as paths, and (`--npm`) the npm pill a
   project on npm gets bottom right (Python 3 with Pillow and fontTools).

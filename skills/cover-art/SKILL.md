@@ -1,11 +1,11 @@
 ---
 name: cover-art
-description: Make a full-bleed, representational 16:10 cover illustration with the project's logo in a pill for a website, app, extension or Claude skill from its repo or URL, for portfolio cards, case-study heroes, project thumbnails and the matching Ko-fi announcement image.
+description: Make a full-bleed, representational 16:10 cover illustration with the project's logo in a pill for a website, app, extension or Claude skill from its repo or URL, for portfolio cards, case-study heroes, project thumbnails, the matching Ko-fi announcement image and a square Instagram post.
 ---
 
 # cover-art
 
-A cover is a flat illustration that says what a project *does*, drawn in the project's own colours, filling the frame edge to edge, with the project's logo in a small dark pill in the bottom-left corner. Not a screenshot, not a mock-up of the UI. It sits on a portfolio card at ~360 px wide, as a case-study hero at ~1200 px and as a Ko-fi post image, and has to work at all three.
+A cover is a flat illustration that says what a project *does*, drawn in the project's own colours, filling the frame edge to edge, with the project's logo in a small dark pill in the bottom-left corner. Not a screenshot, not a mock-up of the UI. It sits on a portfolio card at ~360 px wide, as a case-study hero at ~1200 px, as a Ko-fi post image and, cut square, as an Instagram post, and has to work at all four.
 
 ## The idea in three lines
 
@@ -19,7 +19,8 @@ Paths are relative to this skill's folder.
 
 | File | Use |
 |---|---|
-| `scripts/render.mjs` | `node scripts/render.mjs cover.svg [--out DIR]` writes `cover.png` (1600 × 1000), `cover-card.png` (380 × 238) and `cover-kofi.png` (1600 × 900, 16:9, cropped from the middle for Ko-fi). Uses Playwright only if a Chromium is already installed and never installs one; exit 2 means no browser here, so open the SVG instead. |
+| `scripts/render.mjs` | `node scripts/render.mjs cover.svg [--out DIR]` writes `cover.png` (1600 × 1000), `cover-card.png` (380 × 238) and `cover-kofi.png` (1600 × 900, 16:9, cropped from the middle for Ko-fi); given a square SVG from `square.mjs` it writes just that one PNG, at the size the SVG declares. Uses Playwright only if a Chromium is already installed and never installs one; exit 2 means no browser here, so open the SVG instead. |
+| `scripts/square.mjs` | `node scripts/square.mjs cover.svg [--center X] [--out DIR]` writes `cover-square.svg`: a 1000 × 1000 window of the scene (x 300–1300 by default; `--center` moves it) declared at 1080 × 1080 for Instagram, with the logo pill and npm pill moved into the square's bottom corners. It finds the pills by their `logo-pill` and `npm-pill` group ids. Then `node scripts/render.mjs cover-square.svg` writes `cover-square.png` (1080 × 1080). No dependencies. |
 | `scripts/logo_pill.py` | Prints the logo pill as an SVG `<g>` to paste in last (or, with `--npm`, the npm pill for the bottom-right corner): the project's mark (SVG nested as-is, or a pixel-art PNG redrawn as rects with `--grid`) and its wordmark set in the brand font as paths. `python3 scripts/logo_pill.py --help`. Needs Pillow and fontTools (+ brotli for `.woff2`). |
 | `examples/*.svg` | Eight covers, one or more per pattern below. `tinkerkit.svg` follows the current full-bleed and logo-pill rules; the other seven predate them, so use those for subject, stroke weight and palette, not for framing. |
 
@@ -37,7 +38,7 @@ Paths are relative to this skill's folder.
 4. **Draw** a 1600 × 1000 SVG with a script (Python or JS) rather than hand-typed paths, so geometry is computed and repeatable. Use the product's real assets where they help: its sample image, its own trace, its icon geometry. Repeated pieces (tiles, bricks, leaves) go in `<defs>` and are placed with `<use>`, which keeps a full-bleed scene well under the size limit. Add the logo pill (and the npm pill, if it's on npm) last, from `scripts/logo_pill.py`.
 5. **Render and look.** `node scripts/render.mjs cover.svg`, then read the full, card and Ko-fi PNGs. Fix anything that fails the checklist, then look once more.
 6. **Deliver** the SVG (PNG only if the SVG is over ~150 KB, e.g. heavy pixel art) with alt text: one sentence saying what the picture shows. On mattblack.space (`mtblck/mb-portfolio`) that is `public/work/<slug>.svg` and the project's `cover` in `content/projects.json`, `{ "src": "/work/<slug>.svg", "alt": "…" }`, with `caption` only if the picture uses real product data worth naming. **If the project has no entry yet**, add a small one (`status` from what the project's site says, `case: null`, `links` to its live site), placed next to projects of the same kind, run `npm run content:check`, and list every field you had to guess (offer, summary, stack, tags) at the top of the PR for Matt to check. Elsewhere, put it where the site keeps its images and wire it the way that site does.
-7. **Ko-fi PNG, every time.** `render.mjs` writes it as `<name>-kofi.png` (1600 × 900) for announcing the project or an update on Ko-fi. Read it to check the crop cut nothing that matters and the pills sit whole inside it. On mattblack.space copy it to `kofi/<slug>.png` (outside `public/`, so the site doesn't serve it); elsewhere, keep it next to the cover's source. Attach it to your reply so it can be uploaded to Ko-fi straight away, with the same alt text. Then open a PR with the SVG, the `cover` entry and the Ko-fi PNG.
+7. **Ko-fi PNG and square, every time.** `render.mjs` writes it as `<name>-kofi.png` (1600 × 900) for announcing the project or an update on Ko-fi. Read it to check the crop cut nothing that matters and the pills sit whole inside it. On mattblack.space copy it to `kofi/<slug>.png` (outside `public/`, so the site doesn't serve it); elsewhere, keep it next to the cover's source. Then cut the square: `node scripts/square.mjs cover.svg`, `node scripts/render.mjs cover-square.svg`, and read `cover-square.png`. If the focal point is cut or sits under a pill, run `square.mjs` again with `--center` at the focal point's x (Tinkerkit's cursor is at x ≈ 1230, so `--center 1000`). If no window tells the story (a Split cover whose two halves sit 1000 px apart), redraw the scene from the same script on a 1000 × 1000 canvas, declared `width="1080" height="1080"`, with the pills at the same distances from the square's corners (`logo_pill.py --x 72 --bottom 896`, `--npm --right 928`). On mattblack.space put the square SVG and PNG in `instagram/<slug>.svg` and `instagram/<slug>.png` (outside `public/`, like `kofi/`); elsewhere, next to the cover's source. Attach the Ko-fi and square PNGs to your reply so they can be posted straight away, with the same alt text. Then open a PR with the SVG, the `cover` entry, the Ko-fi PNG and the square SVG and PNG.
 
 ## Patterns (pick the one that fits the verb)
 
@@ -55,7 +56,7 @@ Avoid: browser windows and phone frames (that's a screenshot pretending), dashbo
 
 - **Canvas** 1600 × 1000 (16:10), `viewBox="0 0 1600 1000"`, a `<title>` matching the alt text.
 - **Full bleed** The picture fills the whole frame, edge to edge: no wide band of plain ground around a centred object. Make the subject a scene or surface that runs off the edges (the map, the desk, the cutting mat, the shelf the machine stands on) or draw the object large enough that it is cropped by the frame. Empty space is only allowed where it means something (the unpainted part of a canvas) and stays small, ≤ 25 % of the frame.
-- **Safe area** The cover is shown with `object-cover` and cropped to 16:9 for Ko-fi (y 50–950), so the focal point (the accent) and the logo pill stay inside x 100–1500, y 150–850. Anything outside that is scene that may be cut.
+- **Safe area** The cover is shown with `object-cover` and cropped to 16:9 for Ko-fi (y 50–950), so the focal point (the accent) and the logo pill stay inside x 100–1500, y 150–850. Anything outside that is scene that may be cut. The square keeps only 1000 px of the width, so keep the focal point within about 900 px across (ideally x 300–1300, the default window), and clear of the pills' corners in both shapes.
 - **Composition** One focal point, on or near the optical centre (slightly above the middle). Detail elsewhere in the scene stays quieter than the focal point.
 - **Logo pill** Bottom-left corner: left edge at x ≈ 72, bottom edge at y ≈ 896, about 104 px tall, fully rounded. Fill is the product's darkest ground (its dark-mode paper, or near-black `#0b0d12` for a light-first brand), with an optional 3 px outline in a neutral token so it separates from dark scenes. Inside: the mark at ~62 % of the pill's height, then the wordmark in the site's brand font, colour and letter spacing, as paths (never `<text>`). Mark alone if the product has no wordmark. Keep the scene's focal point clear of it.
 - **npm pill** If the project is published to npm, add a second pill in the bottom-right corner, mirroring the first (right edge x ≈ 1528, same bottom, height, fill and outline), holding only the npm logo in its own red: `scripts/logo_pill.py --npm`. No pill for other registries unless asked.
@@ -68,7 +69,7 @@ Avoid: browser windows and phone frames (that's a screenshot pretending), dashbo
 - **Motion** Covers are still. If the product is about motion, imply it: a lit packet mid-wire, a progress bar part-filled, a pencil at the end of its line.
 - **Set consistency** Covers in one gallery share the pill's size and position, the safe area and stroke weight, and differ in palette and scene. That is what makes a wall of them feel curated rather than matched.
 
-## Review checklist (read the full, card and Ko-fi PNGs)
+## Review checklist (read the full, card, Ko-fi and square PNGs)
 
 - At 380 px: can you say what the product does from the picture alone? Is the accent the first thing the eye lands on, before the logo?
 - The art fills the frame: no plain border or wide band of empty ground; any empty area means something and is ≤ 25 %.
@@ -80,3 +81,4 @@ Avoid: browser windows and phone frames (that's a screenshot pretending), dashbo
 - Alt text describes the picture plainly and mentions the logo ("A pixel village map, a road running up to a brass cursor laying the next tile, with the Tinkerkit logo bottom left"), not the product's marketing line.
 - SVG under ~150 KB; it renders identically in Chromium at both sizes.
 - The Ko-fi PNG is 1600 × 900, and the focal point and pills sit whole inside it.
+- The square PNG is 1080 × 1080: the focal point is whole and clear of both pills, the pills sit in the square's bottom corners, and the scene still fills the frame.
