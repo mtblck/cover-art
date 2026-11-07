@@ -1,5 +1,17 @@
 # Changelog
 
+## 1.4.0 (2026-11-07)
+
+- A square version of every cover for Instagram: `scripts/square.mjs` cuts a
+  1000 × 1000 window of the scene (`--center X` to move it onto the focal
+  point) as `<name>-square.svg`, declared at 1080 × 1080, with the logo and npm
+  pills moved into the square's bottom corners; `render.mjs` renders a square
+  SVG as one 1080 × 1080 PNG.
+- The workflow, safe area and checklist cover the square, including when to
+  redraw a scene on a square canvas instead of cutting it.
+- `examples/tinkerkit.svg` wraps its logo pill in `<g id="logo-pill">`, as
+  `logo_pill.py` prints it, so `square.mjs` can find it.
+
 ## 1.3.0 (2026-11-07)
 
 - Moved from mtblck/claude-marketplace to its own repo, with its git history,
