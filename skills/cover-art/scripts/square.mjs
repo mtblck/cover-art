@@ -31,10 +31,20 @@ if (!files.length) {
   console.error('usage: node square.mjs cover.svg [more.svg …] [--center X] [--size 1080] [--out DIR]')
   process.exit(1)
 }
-const size = Number(opt('--size', 1080))
+const num = (name, fallback) => {
+  const v = opt(name)
+  if (v == null) return fallback
+  const n = Number(v)
+  if (!Number.isFinite(n) || (name === '--size' && n <= 0)) {
+    console.error(`${name} needs a number, got ${JSON.stringify(v)}`)
+    process.exit(1)
+  }
+  return n
+}
+const size = num('--size', 1080)
+const center = num('--center', null)
 const outDir = opt('--out') ? resolve(opt('--out')) : null
 if (outDir) mkdirSync(outDir, { recursive: true })
-const center = opt('--center') == null ? null : Number(opt('--center'))
 
 const fmt = (n) => String(Math.round(n * 10) / 10)
 
@@ -46,8 +56,8 @@ function shift(svg, id, dx) {
   let attrs = m[1]
   const t = attrs.match(/\stransform="([^"]*)"/)
   const move = `translate(${fmt(dx)} 0)`
-  attrs = t ? attrs.replace(t[0], ` transform="${move} ${t[1]}"`) : `${attrs} transform="${move}"`
-  return [svg.replace(re, `<g id="${id}"${attrs}>`), true]
+  attrs = t ? attrs.replace(t[0], () => ` transform="${move} ${t[1]}"`) : `${attrs} transform="${move}"`
+  return [svg.replace(re, () => `<g id="${id}"${attrs}>`), true]
 }
 
 let failed = false
@@ -76,7 +86,7 @@ for (const file of files) {
     const a = new RegExp(`\\s${attr}="[^"]*"`)
     tag = a.test(tag) ? tag.replace(a, ` ${attr}="${val}"`) : tag.replace(/^<svg\b/, `<svg ${attr}="${val}"`)
   }
-  svg = svg.replace(root[0], tag)
+  svg = svg.replace(root[0], () => tag)
 
   // The logo pill keeps its distance from the left edge, the npm pill from the right.
   let found
