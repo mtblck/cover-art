@@ -1,9 +1,18 @@
 {
   "name": "cover-art",
-  "version": "1.4.0",
-  "description": "Full-bleed, representational 16:10 cover illustrations with the project's logo in a pill, for websites, apps, extensions and skills, with a 16:9 Ko-fi PNG and a square Instagram SVG and PNG of each, made from the project's own repo, purpose and colours. For portfolio cards, case-study heroes and project thumbnails.",
-  "author": { "name": "mtblck" },
+  "version": "1.5.0",
+  "description": "Full-bleed, representational 16:10 cover illustrations with the project's logo in a pill, for websites, apps, extensions and skills, with a 16:9 Ko-fi PNG, a 1200 × 630 share image for link previews and a square Instagram SVG and PNG of each, made from the project's own repo, purpose and colours. For portfolio cards, case-study heroes and project thumbnails.",
+  "author": {
+    "name": "mtblck"
+  },
   "license": "MIT",
-  "keywords": ["design", "illustration", "svg", "portfolio", "thumbnail", "cover"],
+  "keywords": [
+    "design",
+    "illustration",
+    "svg",
+    "portfolio",
+    "thumbnail",
+    "cover"
+  ],
   "repository": "https://github.com/mtblck/cover-art"
 }
