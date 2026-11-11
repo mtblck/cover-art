@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.5.0 (2026-11-11)
+
+- `render.mjs` also writes `<name>-og.png`, a 1200 × 630 (1.91:1) share image
+  for `og:image` and `twitter:image` link previews, trimmed 80 px top and
+  bottom from the cover (inside its safe area). The workflow offers it as the
+  page's share image when the cover is for the project's own site, and the
+  checklist covers it.
+
 ## 1.4.0 (2026-11-07)
 
 - A square version of every cover for Instagram: `scripts/square.mjs` cuts a

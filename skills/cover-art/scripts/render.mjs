@@ -2,13 +2,14 @@
 /**
  * Renders cover SVGs to PNG at full size (1600 × 1000) and card size (380 × 238)
  * so both can be read back and checked, plus a 1600 × 900 (16:9) Ko-fi PNG
- * cropped from the middle of the cover (inside its 100 px safe margin).
+ * cropped from the middle of the cover (inside its 100 px safe margin), and a
+ * 1200 × 630 (1.91:1) share image for og:image / twitter:image link previews.
  * A square SVG (square.mjs's <name>-square.svg) becomes one PNG at the size it
  * declares, 1080 × 1080 by default, for Instagram.
  *
  *   node render.mjs cover.svg [cover-square.svg …] [--out DIR]
  *
- * Writes <name>.png, <name>-card.png and <name>-kofi.png next to each cover,
+ * Writes <name>.png, <name>-card.png, <name>-kofi.png and <name>-og.png next to each cover,
  * and <name>-square.png for each square (or into --out).
  * Uses Playwright only if it and a Chromium are already installed; it never
  * installs one. Exit 2 means "no browser here".
@@ -60,6 +61,9 @@ const sizes = [
   ['', 1],
   ['-card', 380 / 1600],
   ['-kofi', 1, { x: 0, y: 50, width: 1600, height: 900 }],
+  // Link previews (Slack, Facebook, LinkedIn, X large cards) are 1.91:1 at
+  // 1200 × 630: trim 80 px top and bottom, drawn at three quarters of the pixels.
+  ['-og', 0.75, { x: 0, y: 80, width: 1600, height: 840 }],
 ]
 // A square is drawn once, at the width and height its root <svg> declares.
 function squareSide(src) {

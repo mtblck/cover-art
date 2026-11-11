@@ -7,7 +7,8 @@ reads the project's purpose, design tokens and any hero visual, finds its logo
 and brand font, picks one of five concept patterns, draws a 1600 × 1000 SVG
 with a script, checks it at full and card size, and delivers it with alt text,
 plus a 1600 × 900 Ko-fi PNG of the same cover for announcing the project or an
-update, and a 1080 × 1080 square SVG and PNG for an Instagram post.
+update, a 1200 × 630 share image for link previews (`og:image`), and a
+1080 × 1080 square SVG and PNG for an Instagram post.
 
 ![Tinkerkit's cover: a pixel-art village map with a brass cursor laying its next tile, and the Tinkerkit logo bottom left](skills/cover-art/examples/tinkerkit.svg)
 
@@ -50,7 +51,7 @@ The rule it works from is "one verb, one picture": draw the one thing the
 product does, in the product's own colours, with the accent only on that part.
 
 - `scripts/render.mjs` renders a cover at 1600 px and 380 px for review, and
-  the 16:9 Ko-fi PNG (Node 18+; uses Playwright's Chromium only if it's already
+  the 16:9 Ko-fi PNG and the 1200 × 630 share image (Node 18+; uses Playwright's Chromium only if it's already
   installed), and a square SVG as a 1080 × 1080 PNG.
 - `scripts/square.mjs` cuts the square SVG from a cover: a 1000 px window of the
   scene (`--center` picks where), with the pills moved into its bottom corners
